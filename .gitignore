@@ -1,0 +1,39 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Testing
+coverage
+
+# Production
+dist
+out
+build
+
+# Misc
+.DS_Store
+.env
+.npmrc
+*.vsix
+*.log
+
+# VS Code
+.vscode-test
+.vscode/launch.json
+.vscode/settings.json
+.vscode/tasks.json
+# Ensure we don't ignore useful vscode config if intended, but usually personal settings are ignored.
+# For an extension, launch.json and tasks.json are often useful to share, so let's KEEP them commenting them out in ignore or just ignoring .vscode/* but keeping specific ones.
+# Actually, standard `yo code` keeps launch.json.
+# Let's ignore the folder but keep the config files if they are generic.
+# .vscode/*
+# !.vscode/launch.json
+# !.vscode/tasks.json
+# !.vscode/extensions.json
+
+# Temporary files
+sample.db
+generate_sample_db.js
+vsce.log
+.vscodeignore.bak

@@ -2,7 +2,7 @@
   "name": "sqlite-db-viewer",
   "displayName": "SQLite DB Viewer",
   "description": "Native-feeling SQLite database viewer for VS Code",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "keyshout",
   "license": "MIT",
   "icon": "assets/icon.png",
@@ -39,12 +39,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "newDbViewer.open",
-        "title": "SQLite DB Viewer: Open"
-      },
-      {
         "command": "newDbViewer.openFile",
-        "title": "SQLite DB Viewer: Open Database"
+        "title": "SQLite DB Viewer: Open"
       }
     ],
     "customEditors": [

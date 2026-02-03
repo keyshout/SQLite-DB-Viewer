@@ -7,9 +7,20 @@ node_modules
 coverage
 
 # Production
-dist
+# dist
 out
 build
+
+# Source Code (Obfuscation)
+src/
+webview-ui/src/
+webview-ui/vite.config.ts
+webview-ui/tsconfig.json
+tsconfig.json
+estlintrc.json
+minify.js
+resize_icon.js
+
 
 # Misc
 .DS_Store

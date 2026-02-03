@@ -1,3 +1,384 @@
-"use strict";var __createBinding=this&&this.__createBinding||(Object.create?function(t,e,n,o){o===void 0&&(o=n);var r=Object.getOwnPropertyDescriptor(e,n);(!r||("get"in r?!e.__esModule:r.writable||r.configurable))&&(r={enumerable:!0,get:function(){return e[n]}}),Object.defineProperty(t,o,r)}:function(t,e,n,o){o===void 0&&(o=n),t[o]=e[n]}),__setModuleDefault=this&&this.__setModuleDefault||(Object.create?function(t,e){Object.defineProperty(t,"default",{enumerable:!0,value:e})}:function(t,e){t.default=e}),__importStar=this&&this.__importStar||function(){var t=function(e){return t=Object.getOwnPropertyNames||function(n){var o=[];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(o[o.length]=r);return o},t(e)};return function(e){if(e&&e.__esModule)return e;var n={};if(e!=null)for(var o=t(e),r=0;r<o.length;r++)o[r]!=="default"&&__createBinding(n,e,o[r]);return __setModuleDefault(n,e),n}}();Object.defineProperty(exports,"__esModule",{value:!0}),exports.activate=activate,exports.deactivate=deactivate;const fs=__importStar(require("fs")),path=__importStar(require("path")),vscode=__importStar(require("vscode"));function activate(t){const e=vscode.window.createOutputChannel("New Db Viewer");e.appendLine("Activated");const n=String(t.extension.packageJSON.version??""),o=String(t.extension.packageJSON.displayName??t.extension.packageJSON.name??"New Db Viewer"),r=new DbViewerCustomEditorProvider(t.extensionUri,e,o,n),l=vscode.window.registerCustomEditorProvider("newDbViewer.dbViewer",r,{supportsMultipleEditorsPerDocument:!0}),h=vscode.commands.registerCommand("newDbViewer.open",async()=>{const s=await pickDatabaseFile();s&&await openWithViewer(s,e)}),y=vscode.commands.registerCommand("newDbViewer.openFile",async s=>{const i=s??await pickDatabaseFile();i&&await openWithViewer(i,e)}),f=vscode.workspace.onDidOpenTextDocument(async s=>{isDatabaseFile(s.uri)&&await openWithViewer(s.uri,e)});t.subscriptions.push(l,h,y,f,e)}function deactivate(){}async function pickDatabaseFile(){const t=await vscode.window.showOpenDialog({canSelectMany:!1,filters:{SQLite:["db","sqlite","sqlite3"]}});return t==null?void 0:t[0]}class DbViewerDocument{constructor(e){this.uri=e}dispose(){}}class DbViewerCustomEditorProvider{constructor(e,n,o,r){this.extensionUri=e,this.output=n,this.extensionDisplayName=o,this.extensionVersion=r}async openCustomDocument(e){return this.output.appendLine(`openCustomDocument: ${e.fsPath}`),new DbViewerDocument(e)}async resolveCustomEditor(e,n){this.output.appendLine(`resolveCustomEditor: ${e.uri.fsPath}`),n.webview.options={enableScripts:!0,localResourceRoots:[vscode.Uri.joinPath(this.extensionUri,"webview-ui","dist"),vscode.Uri.joinPath(this.extensionUri,"dist","codicons")]};let o=!1,r,l=!1;const h=path.basename(e.uri.fsPath),y=()=>{l||(l=!0,n.webview.postMessage({type:"webview:config",displayName:this.extensionDisplayName,version:this.extensionVersion}))},f=async()=>(r=await vscode.workspace.fs.readFile(e.uri),this.output.appendLine(`read db bytes: ${r.byteLength}`),r),s=async()=>{r||await f(),r&&o&&(this.output.appendLine(`sending db bytes: ${r.byteLength}`),n.webview.postMessage({type:"db:load",name:h,bytes:r}))};n.webview.onDidReceiveMessage(i=>{if((i==null?void 0:i.type)==="webview:ready"){this.output.appendLine("webview:ready"),o=!0,y(),s();return}if((i==null?void 0:i.type)==="webview:refresh"){this.output.appendLine("webview:refresh"),f().then(()=>s());return}if((i==null?void 0:i.type)==="db:save"){const a=normalizeMessageBytes(i.bytes),u=i.saveId;if(this.output.appendLine(`db:save received bytes=${a?a.byteLength:"invalid"}`),!a){const c="db:save received invalid bytes";this.output.appendLine(c),n.webview.postMessage({type:"db:save:result",ok:!1,message:c,saveId:u});return}vscode.workspace.fs.writeFile(e.uri,a).then(()=>{r=a,this.output.appendLine(`db saved: ${e.uri.fsPath}`),n.webview.postMessage({type:"db:save:result",ok:!0,message:"Saved",saveId:u})},c=>{const d=c instanceof Error?c.message:String(c);this.output.appendLine(`db save failed: ${d}`),n.webview.postMessage({type:"db:save:result",ok:!1,message:d,saveId:u})});return}if((i==null?void 0:i.type)==="export:file"){const a=typeof i.name=="string"&&i.name.trim()?i.name.trim():"export.txt",u=typeof i.text=="string"?i.text:"";if(!u){n.webview.postMessage({type:"export:result",ok:!1,message:"Nothing to save."});return}const c=path.extname(a).replace(".","")||"txt",d=path.dirname(e.uri.fsPath),w=vscode.Uri.file(path.join(d,a));(async()=>{const p=await vscode.window.showSaveDialog({defaultUri:w,filters:{[c.toUpperCase()]:[c]}});if(!p){n.webview.postMessage({type:"export:result",ok:!1,message:"Save canceled."});return}await vscode.workspace.fs.writeFile(p,Buffer.from(u,"utf8")),n.webview.postMessage({type:"export:result",ok:!0,message:`Saved ${path.basename(p.fsPath)}`})})().catch(p=>{const v=p instanceof Error?p.message:String(p);n.webview.postMessage({type:"export:result",ok:!1,message:v})});return}if((i==null?void 0:i.type)==="export:save"){const a=typeof i.name=="string"&&i.name.trim()?i.name.trim():"export.txt",u=typeof i.text=="string"?i.text:"";if(!u){n.webview.postMessage({type:"export:result",ok:!1,message:"Nothing to save."});return}const c=path.dirname(e.uri.fsPath),d=path.join(c,a);vscode.workspace.fs.writeFile(vscode.Uri.file(d),Buffer.from(u,"utf8")).then(()=>{this.output.appendLine(`saved export: ${d}`),n.webview.postMessage({type:"export:result",ok:!0,message:`Saved to ${d}`})},w=>{const p=w instanceof Error?w.message:String(w);n.webview.postMessage({type:"export:result",ok:!1,message:p})});return}if((i==null?void 0:i.type)==="webview:log"){i.message&&this.output.appendLine(`webview log: ${i.message}`);return}if((i==null?void 0:i.type)==="webview:error"){const a=[i.message?`message=${i.message}`:void 0,i.source?`source=${i.source}`:void 0,i.line?`line=${i.line}`:void 0,i.column?`column=${i.column}`:void 0].filter(Boolean).join(" ");this.output.appendLine(`webview error: ${a}`),i.stack&&this.output.appendLine(String(i.stack))}}),await f(),n.webview.html=getWebviewHtml(n.webview,this.extensionUri),o&&await s()}}async function openWithViewer(t,e){if(!isDatabaseFile(t))return;const n=t.toString();if(!openGate.has(n)){openGate.add(n),setTimeout(()=>openGate.delete(n),1500);try{await vscode.commands.executeCommand("vscode.openWith",t,"newDbViewer.dbViewer")}catch(o){const r=o instanceof Error?o.message:String(o);e.appendLine(`openWith failed: ${r}`),vscode.window.showErrorMessage(`New Db Viewer could not be opened: ${r}`)}}}const openGate=new Set;function isDatabaseFile(t){const e=path.extname(t.fsPath).toLowerCase();return e===".db"||e===".sqlite"||e===".sqlite3"}function getWebviewHtml(t,e){const n=vscode.Uri.joinPath(e,"webview-ui","dist"),o=vscode.Uri.joinPath(n,"index.html");let r=fs.readFileSync(o.fsPath,"utf8");const l=Date.now().toString(),h=getNonce(),y=["default-src 'none'",`img-src ${t.cspSource} blob: data:`,`style-src ${t.cspSource} 'unsafe-inline'`,`font-src ${t.cspSource}`,`connect-src ${t.cspSource}`,`worker-src ${t.cspSource}`,`script-src 'nonce-${h}' 'wasm-unsafe-eval'`].join("; "),f=t.asWebviewUri(vscode.Uri.joinPath(e,"dist","codicons","codicon.css"));r=r.replace("<head>",`<head>
-<meta http-equiv="Content-Security-Policy" content="${y}">
-<link rel="stylesheet" href="${f}">`);const s=t.asWebviewUri(n).toString();return r=r.replace(/(href|src)=\"\.\/?assets\//g,`$1="${s}/assets/`),r=r.replace(/(href|src)=\"\/assets\//g,`$1="${s}/assets/`),r=r.replace(/assets\/[^\"']+\.(?:js|css|wasm)/g,i=>`${i}?v=${l}`),r=r.replace(/<script /g,`<script nonce="${h}" `),r}function getNonce(){const t="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";let e="";for(let n=0;n<32;n+=1)e+=t.charAt(Math.floor(Math.random()*t.length));return e}function normalizeMessageBytes(t){if(t instanceof Uint8Array)return t;if(t instanceof ArrayBuffer)return new Uint8Array(t);if(Array.isArray(t))return Uint8Array.from(t);if(t&&typeof t=="object"){const e=t;if(e.type==="Buffer"&&Array.isArray(e.data)||Array.isArray(e.data))return Uint8Array.from(e.data);const n=Object.values(e);if(n.length&&n.every(o=>typeof o=="number"))return Uint8Array.from(n)}}
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.activate = activate;
+exports.deactivate = deactivate;
+const fs = __importStar(require("fs"));
+const path = __importStar(require("path"));
+const vscode = __importStar(require("vscode"));
+function activate(context) {
+    const output = vscode.window.createOutputChannel("New Db Viewer");
+    output.appendLine("Activated");
+    const extensionVersion = String(context.extension.packageJSON.version ?? "");
+    const extensionDisplayName = String(context.extension.packageJSON.displayName ?? context.extension.packageJSON.name ?? "New Db Viewer");
+    const provider = new DbViewerCustomEditorProvider(context.extensionUri, output, extensionDisplayName, extensionVersion);
+    const providerRegistration = vscode.window.registerCustomEditorProvider("newDbViewer.dbViewer", provider, {
+        supportsMultipleEditorsPerDocument: true
+    });
+    const openCommand = vscode.commands.registerCommand("newDbViewer.open", async () => {
+        const uri = await pickDatabaseFile();
+        if (!uri) {
+            return;
+        }
+        await openWithViewer(uri, output);
+    });
+    const openFileCommand = vscode.commands.registerCommand("newDbViewer.openFile", async (uri) => {
+        const target = uri ?? (await pickDatabaseFile());
+        if (!target) {
+            return;
+        }
+        await openWithViewer(target, output);
+    });
+    const autoOpenDisposable = vscode.workspace.onDidOpenTextDocument(async (doc) => {
+        if (!isDatabaseFile(doc.uri)) {
+            return;
+        }
+        await openWithViewer(doc.uri, output);
+    });
+    context.subscriptions.push(providerRegistration, openCommand, openFileCommand, autoOpenDisposable, output);
+}
+function deactivate() { }
+async function pickDatabaseFile() {
+    const result = await vscode.window.showOpenDialog({
+        canSelectMany: false,
+        filters: {
+            SQLite: ["db", "sqlite", "sqlite3"]
+        }
+    });
+    return result?.[0];
+}
+class DbViewerDocument {
+    constructor(uri) {
+        this.uri = uri;
+    }
+    dispose() {
+        // No resources to dispose yet.
+    }
+}
+class DbViewerCustomEditorProvider {
+    constructor(extensionUri, output, extensionDisplayName, extensionVersion) {
+        this.extensionUri = extensionUri;
+        this.output = output;
+        this.extensionDisplayName = extensionDisplayName;
+        this.extensionVersion = extensionVersion;
+    }
+    async openCustomDocument(uri) {
+        this.output.appendLine(`openCustomDocument: ${uri.fsPath}`);
+        return new DbViewerDocument(uri);
+    }
+    async resolveCustomEditor(document, webviewPanel) {
+        this.output.appendLine(`resolveCustomEditor: ${document.uri.fsPath}`);
+        webviewPanel.webview.options = {
+            enableScripts: true,
+            localResourceRoots: [
+                vscode.Uri.joinPath(this.extensionUri, "webview-ui", "dist"),
+                vscode.Uri.joinPath(this.extensionUri, "dist", "codicons")
+            ]
+        };
+        let ready = false;
+        let pendingBytes;
+        let configSent = false;
+        const dbName = path.basename(document.uri.fsPath);
+        const sendConfig = () => {
+            if (configSent) {
+                return;
+            }
+            configSent = true;
+            webviewPanel.webview.postMessage({
+                type: "webview:config",
+                displayName: this.extensionDisplayName,
+                version: this.extensionVersion
+            });
+        };
+        const readBytes = async () => {
+            pendingBytes = await vscode.workspace.fs.readFile(document.uri);
+            this.output.appendLine(`read db bytes: ${pendingBytes.byteLength}`);
+            return pendingBytes;
+        };
+        const sendBytes = async () => {
+            if (!pendingBytes) {
+                await readBytes();
+            }
+            if (pendingBytes && ready) {
+                this.output.appendLine(`sending db bytes: ${pendingBytes.byteLength}`);
+                webviewPanel.webview.postMessage({
+                    type: "db:load",
+                    name: dbName,
+                    bytes: pendingBytes
+                });
+            }
+        };
+        webviewPanel.webview.onDidReceiveMessage((message) => {
+            if (message?.type === "webview:ready") {
+                this.output.appendLine("webview:ready");
+                ready = true;
+                sendConfig();
+                void sendBytes();
+                return;
+            }
+            if (message?.type === "webview:refresh") {
+                this.output.appendLine("webview:refresh");
+                void readBytes().then(() => sendBytes());
+                return;
+            }
+            if (message?.type === "db:save") {
+                const bytes = normalizeMessageBytes(message.bytes);
+                const saveId = message.saveId;
+                this.output.appendLine(`db:save received bytes=${bytes ? bytes.byteLength : "invalid"}`);
+                if (!bytes) {
+                    const details = "db:save received invalid bytes";
+                    this.output.appendLine(details);
+                    void webviewPanel.webview.postMessage({
+                        type: "db:save:result",
+                        ok: false,
+                        message: details,
+                        saveId
+                    });
+                    return;
+                }
+                void vscode.workspace.fs.writeFile(document.uri, bytes).then(() => {
+                    pendingBytes = bytes;
+                    this.output.appendLine(`db saved: ${document.uri.fsPath}`);
+                    void webviewPanel.webview.postMessage({
+                        type: "db:save:result",
+                        ok: true,
+                        message: "Saved",
+                        saveId
+                    });
+                }, (err) => {
+                    const messageText = err instanceof Error ? err.message : String(err);
+                    this.output.appendLine(`db save failed: ${messageText}`);
+                    void webviewPanel.webview.postMessage({
+                        type: "db:save:result",
+                        ok: false,
+                        message: messageText,
+                        saveId
+                    });
+                });
+                return;
+            }
+            if (message?.type === "export:file") {
+                const name = typeof message.name === "string" && message.name.trim()
+                    ? message.name.trim()
+                    : "export.txt";
+                const text = typeof message.text === "string" ? message.text : "";
+                if (!text) {
+                    void webviewPanel.webview.postMessage({
+                        type: "export:result",
+                        ok: false,
+                        message: "Nothing to save."
+                    });
+                    return;
+                }
+                const ext = path.extname(name).replace(".", "") || "txt";
+                const defaultDir = path.dirname(document.uri.fsPath);
+                const defaultUri = vscode.Uri.file(path.join(defaultDir, name));
+                void (async () => {
+                    const uri = await vscode.window.showSaveDialog({
+                        defaultUri,
+                        filters: {
+                            [ext.toUpperCase()]: [ext]
+                        }
+                    });
+                    if (!uri) {
+                        void webviewPanel.webview.postMessage({
+                            type: "export:result",
+                            ok: false,
+                            message: "Save canceled."
+                        });
+                        return;
+                    }
+                    await vscode.workspace.fs.writeFile(uri, Buffer.from(text, "utf8"));
+                    void webviewPanel.webview.postMessage({
+                        type: "export:result",
+                        ok: true,
+                        message: `Saved ${path.basename(uri.fsPath)}`
+                    });
+                })().catch((err) => {
+                    const messageText = err instanceof Error ? err.message : String(err);
+                    void webviewPanel.webview.postMessage({
+                        type: "export:result",
+                        ok: false,
+                        message: messageText
+                    });
+                });
+                return;
+            }
+            if (message?.type === "export:save") {
+                const name = typeof message.name === "string" && message.name.trim()
+                    ? message.name.trim()
+                    : "export.txt";
+                const text = typeof message.text === "string" ? message.text : "";
+                if (!text) {
+                    void webviewPanel.webview.postMessage({
+                        type: "export:result",
+                        ok: false,
+                        message: "Nothing to save."
+                    });
+                    return;
+                }
+                const defaultDir = path.dirname(document.uri.fsPath);
+                const targetPath = path.join(defaultDir, name);
+                void vscode.workspace.fs
+                    .writeFile(vscode.Uri.file(targetPath), Buffer.from(text, "utf8"))
+                    .then(() => {
+                    this.output.appendLine(`saved export: ${targetPath}`);
+                    void webviewPanel.webview.postMessage({
+                        type: "export:result",
+                        ok: true,
+                        message: `Saved to ${targetPath}`
+                    });
+                }, (err) => {
+                    const messageText = err instanceof Error ? err.message : String(err);
+                    void webviewPanel.webview.postMessage({
+                        type: "export:result",
+                        ok: false,
+                        message: messageText
+                    });
+                });
+                return;
+            }
+            if (message?.type === "webview:log") {
+                if (message.message) {
+                    this.output.appendLine(`webview log: ${message.message}`);
+                }
+                return;
+            }
+            if (message?.type === "webview:error") {
+                const details = [
+                    message.message ? `message=${message.message}` : undefined,
+                    message.source ? `source=${message.source}` : undefined,
+                    message.line ? `line=${message.line}` : undefined,
+                    message.column ? `column=${message.column}` : undefined
+                ]
+                    .filter(Boolean)
+                    .join(" ");
+                this.output.appendLine(`webview error: ${details}`);
+                if (message.stack) {
+                    this.output.appendLine(String(message.stack));
+                }
+            }
+        });
+        await readBytes();
+        webviewPanel.webview.html = getWebviewHtml(webviewPanel.webview, this.extensionUri);
+        if (ready) {
+            await sendBytes();
+        }
+    }
+}
+async function openWithViewer(uri, output) {
+    if (!isDatabaseFile(uri)) {
+        return;
+    }
+    const key = uri.toString();
+    if (openGate.has(key)) {
+        return;
+    }
+    openGate.add(key);
+    setTimeout(() => openGate.delete(key), 1500);
+    try {
+        await vscode.commands.executeCommand("vscode.openWith", uri, "newDbViewer.dbViewer");
+    }
+    catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        output.appendLine(`openWith failed: ${message}`);
+        vscode.window.showErrorMessage(`New Db Viewer could not be opened: ${message}`);
+    }
+}
+const openGate = new Set();
+function isDatabaseFile(uri) {
+    const ext = path.extname(uri.fsPath).toLowerCase();
+    return ext === ".db" || ext === ".sqlite" || ext === ".sqlite3";
+}
+function getWebviewHtml(webview, extensionUri) {
+    const distUri = vscode.Uri.joinPath(extensionUri, "webview-ui", "dist");
+    const indexPath = vscode.Uri.joinPath(distUri, "index.html");
+    let html = fs.readFileSync(indexPath.fsPath, "utf8");
+    const cacheBust = Date.now().toString();
+    const nonce = getNonce();
+    const csp = [
+        "default-src 'none'",
+        `img-src ${webview.cspSource} blob: data:`,
+        `style-src ${webview.cspSource} 'unsafe-inline'`,
+        `font-src ${webview.cspSource}`,
+        `connect-src ${webview.cspSource}`,
+        `worker-src ${webview.cspSource}`,
+        `script-src 'nonce-${nonce}' 'wasm-unsafe-eval'`
+    ].join("; ");
+    const codiconUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, "dist", "codicons", "codicon.css"));
+    html = html.replace("<head>", `<head>\n<meta http-equiv=\"Content-Security-Policy\" content=\"${csp}\">\n<link rel=\"stylesheet\" href=\"${codiconUri}\">`);
+    const baseUri = webview.asWebviewUri(distUri).toString();
+    html = html.replace(/(href|src)=\"\.\/?assets\//g, `$1=\"${baseUri}/assets/`);
+    html = html.replace(/(href|src)=\"\/assets\//g, `$1=\"${baseUri}/assets/`);
+    html = html.replace(/assets\/[^\"']+\.(?:js|css|wasm)/g, (match) => {
+        return `${match}?v=${cacheBust}`;
+    });
+    html = html.replace(/<script /g, `<script nonce=\"${nonce}\" `);
+    return html;
+}
+function getNonce() {
+    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let nonce = "";
+    for (let i = 0; i < 32; i += 1) {
+        nonce += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return nonce;
+}
+function normalizeMessageBytes(value) {
+    if (value instanceof Uint8Array) {
+        return value;
+    }
+    if (value instanceof ArrayBuffer) {
+        return new Uint8Array(value);
+    }
+    if (Array.isArray(value)) {
+        return Uint8Array.from(value);
+    }
+    if (value && typeof value === "object") {
+        const record = value;
+        if (record.type === "Buffer" && Array.isArray(record.data)) {
+            return Uint8Array.from(record.data);
+        }
+        if (Array.isArray(record.data)) {
+            return Uint8Array.from(record.data);
+        }
+        const values = Object.values(record);
+        if (values.length && values.every((item) => typeof item === "number")) {
+            return Uint8Array.from(values);
+        }
+    }
+    return undefined;
+}
+//# sourceMappingURL=extension.js.map

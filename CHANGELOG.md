@@ -2,6 +2,12 @@
 
 All notable changes to the "SQLite DB Viewer" extension will be documented in this file.
 
+## [0.0.2] - 2024-02-04
+### Fixed
+-   Corrected README and Marketplace details.
+-   Minified extension code for better performance and security.
+-   Added missing icons to the installation package.
+
 ## [0.0.1] - 2024-02-04
 ### Added
 -   Initial release of SQLite DB Viewer.

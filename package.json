@@ -2,7 +2,7 @@
   "name": "sqlite-db-viewer",
   "displayName": "SQLite DB Viewer",
   "description": "Native-feeling SQLite database viewer for VS Code",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "keyshout",
   "license": "MIT",
   "icon": "assets/icon.png",
@@ -91,6 +91,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@vscode/codicons": "^0.0.36"
+    "@vscode/codicons": "^0.0.36",
+    "jimp": "^1.6.0"
   }
 }

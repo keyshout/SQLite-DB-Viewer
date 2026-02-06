@@ -2,6 +2,11 @@
 
 All notable changes to the "SQLite DB Viewer" extension will be documented in this file.
 
+## [0.0.5] - 2026-02-06
+### Packaging & Performance
+-   **Massive Size Reduction**: Reduced extension package size from ~120MB to ~2.6MB by implementing proper `.vscodeignore` rules.
+-   **Bundled Dependencies**: Updated build process to bundle all dependencies into a single file, removing the need for a `node_modules` folder at runtime (Standalone/Portable).
+
 ## [0.0.4] - 2026-02-06
 ### Major Features (Undo/Redo Overhaul)
 -   **Persistent Undo/Redo (Hot Exit)**: Edit history is now strictly synced to disk. You can modify data, close VS Code without saving, rejoin, and *still* Undo your changes.

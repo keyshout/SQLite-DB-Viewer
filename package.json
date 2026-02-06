@@ -2,13 +2,13 @@
   "name": "sqlite-db-viewer",
   "displayName": "SQLite DB Viewer",
   "description": "Native-feeling SQLite database viewer for VS Code",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "keyshout",
   "license": "MIT",
   "icon": "assets/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/keyshout/SQLite-DB-Viewer/"
+    "url": "https://github.com/keyshout/SQLite-DB-Viewer.git"
   },
   "bugs": {
     "url": "https://github.com/keyshout/SQLite-DB-Viewer/issues"
@@ -35,7 +35,10 @@
     "LICENSE",
     "assets/icon.png"
   ],
-  "main": "./dist/extension.js",
+  "main": "dist/extension.js",
+  "activationEvents": [
+    "onCustomEditor:sqliteDbViewer.dbViewer"
+  ],
   "contributes": {
     "commands": [
       {
@@ -77,7 +80,7 @@
     "build:webview": "npm --prefix webview-ui run build",
     "copy:codicons": "xcopy \"node_modules\\@vscode\\codicons\\dist\" \"dist\\codicons\" /E /I /Y",
     "build": "npm run compile && npm run minify:extension && npm run build:webview && npm run copy:codicons",
-    "minify:extension": "esbuild dist/extension.js --minify --platform=node --target=node16 --outfile=dist/extension.js --allow-overwrite",
+    "minify:extension": "esbuild dist/extension.js --bundle --minify --platform=node --target=node16 --outfile=dist/extension.js --external:vscode --allow-overwrite",
     "dev:webview": "npm --prefix webview-ui run dev"
   },
   "devDependencies": {

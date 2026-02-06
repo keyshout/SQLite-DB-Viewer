@@ -2,13 +2,35 @@
 
 All notable changes to the "SQLite DB Viewer" extension will be documented in this file.
 
+## [0.0.4] - 2026-02-06
+### Major Features (Undo/Redo Overhaul)
+-   **Persistent Undo/Redo (Hot Exit)**: Edit history is now strictly synced to disk. You can modify data, close VS Code without saving, rejoin, and *still* Undo your changes.
+-   **Data Integrity Protection**: Fixed a critical issue where Undoing corrupted data types. Now `NULL`, `Blob`, and `Number` types are preserved exactly as-is during Undo/Redo cycles.
+-   **Smart Primary Key Undo**: The undo engine now intelligently tracks Primary Key mutations. If you change an ID (e.g., 1 -> 99), Undo knows to find row 99 and revert it to 1.
+-   **Global History Sync**: Replaced browser-based navigation with a dedicated Undo/Redo system that integrates with VS Code's "Edit -> Undo" menu.
+
+### Safety & Validation
+-   **Duplicate Key Prevention**: "Edit Row" now performs real-time validation. It creates a safety lock (disabling Save) if you try to enter a Primary Key that already exists.
+-   **Strict Type Handling**: Enhanced serialization logic (JSON Revivers) to handle binary data (`Uint8Array`) correctly in the history stack.
+
+### UI/UX Refinements
+-   **Sticky "Add Row" Bar**: Completely re-engineered the "Add Row" button.
+    -   Smart Placement: Sits naturally after data in short tables, sticks to bottom in long tables.
+    -   Minimalist Design: Restricted to the "Action Column", ensuring it never overlaps your data or horizontal scrollbars.
+-   **Zebra Striping**: Added alternating row colors for better readability on wide datasets.
+-   **Modal Polish**: Added "Hand" cursors to buttons, standard "X" close buttons, and error-state styling to all modals.
+-   **Scroll-Based Layout**: Switched to a standard scrollbar implementation (removing custom scrollbar hacks) for native OS feel and reliability.
+
+### Bug Fixes
+-   Fixed "Double Undo" loop where Webview and VS Code would fight for control of the undo stack.
+-   Fixed Delete Confirmation dialog to correctly display the row's Primary Key.
+-   Fixed "Dirty State" logic to correctly reflect unsaved changes immediately upon editing.
+
 ## [0.0.3] - 2026-02-04
 ### Improved
 -   Refined documentation with a comprehensive, professional README.
 -   Removed redundant commands to declutter Feature list.
 -   Corrected date and metadata issues.
-
-
 
 ## [0.0.2] - 2026-02-04
 ### Fixed

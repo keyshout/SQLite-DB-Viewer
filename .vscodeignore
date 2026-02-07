@@ -12,3 +12,4 @@ vite.config.ts
 **/*.map
 .git/**
 .github/**
+assets/*.gif

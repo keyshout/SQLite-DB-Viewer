@@ -2,7 +2,7 @@
   "name": "sqlite-db-viewer",
   "displayName": "SQLite DB Viewer",
   "description": "Native-feeling SQLite database viewer for VS Code",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "publisher": "keyshout",
   "license": "MIT",
   "icon": "assets/icon.png",

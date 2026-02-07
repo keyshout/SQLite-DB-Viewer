@@ -6,7 +6,7 @@
 
 ## Quick Demo
 
-![Main UI](assets/main-ui.gif)
+![Main UI](https://raw.githubusercontent.com/keyshout/SQLite-DB-Viewer/main/assets/main-ui.gif)
 
 ---
 
@@ -34,22 +34,19 @@ Manage your database schema with ease. Create new tables, add columns, or delete
 
 Use the **"Create Table"** button in the sidebar to open the table creation modal. Define your table name, add multiple columns (with name and type), and optionally designate a **Primary Key**.
 
-<!-- GIF: Table Creation -->
-![Create Table](assets/create-table.gif)
+![Create Table](https://raw.githubusercontent.com/keyshout/SQLite-DB-Viewer/main/assets/create-table.gif)
 
 #### Adding Columns to an Existing Table
 
 Right-click on any table in the sidebar and select **"Add Column"**. The modal allows you to add one or more columns at once, each with a name and data type.
 
-<!-- GIF: Add Column -->
-![Add Column](assets/add-column.gif)
+![Add Column](https://raw.githubusercontent.com/keyshout/SQLite-DB-Viewer/main/assets/add-column.gif)
 
 #### Deleting a Table
 
 Right-click on the table name and select **"Delete Table"**. A confirmation dialog will appear to prevent accidental deletions.
 
-<!-- GIF: Delete Table -->
-![Delete Table](assets/delete-table.gif)
+![Delete Table](https://raw.githubusercontent.com/keyshout/SQLite-DB-Viewer/main/assets/delete-table.gif)
 
 ---
 
@@ -61,22 +58,19 @@ Full control over your data rows with intuitive add, edit, and delete operations
 
 Click the **"+ Add Row"** button at the bottom of the data grid (or in the toolbar). A modal will appear with input fields for each column. Fill in the values and click **"Add"** to insert the new row.
 
-<!-- GIF: Add Row -->
-![Add Row](assets/add-row.gif)
+![Add Row](https://raw.githubusercontent.com/keyshout/SQLite-DB-Viewer/main/assets/add-row.gif)
 
 #### Editing a Row
 
 **Double-click** on any cell to open the **Edit Row** modal. All columns are displayed in a form, and you can modify any value. Changes are validated in real-time (e.g., duplicate Primary Key detection).
 
-<!-- GIF: Edit Row -->
-![Edit Row](assets/edit-row.gif)
+![Edit Row](https://raw.githubusercontent.com/keyshout/SQLite-DB-Viewer/main/assets/edit-row.gif)
 
 #### Deleting a Row
 
 Right-click on a row to open the context menu, then select **"Delete Row"**. A confirmation dialog will show the row's Primary Key or RowID for clarity.
 
-<!-- GIF: Delete Row -->
-![Delete Row](assets/delete-row.gif)
+![Delete Row](https://raw.githubusercontent.com/keyshout/SQLite-DB-Viewer/main/assets/delete-row.gif)
 
 ---
 
@@ -118,8 +112,7 @@ Export your data or query results in industry-standard formats. Right-click on t
 | **Markdown** | README files, GitHub wikis |
 | **SQL INSERT** | Recreate data in another database |
 
-<!-- GIF: Export -->
-![Export](assets/export.gif)
+![Export](https://raw.githubusercontent.com/keyshout/SQLite-DB-Viewer/main/assets/export.gif)
 
 ---
 

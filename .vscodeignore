@@ -1,0 +1,14 @@
+.vscode/**
+.vscode-test/**
+src/**
+node_modules/**
+webview-ui/**
+!webview-ui/dist/**
+.gitignore
+vsc-extension-quickstart.md
+tsconfig.json
+vite.config.ts
+*.map
+**/*.map
+.git/**
+.github/**

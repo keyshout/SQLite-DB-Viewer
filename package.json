@@ -1,0 +1,96 @@
+{
+  "name": "sqlite-db-viewer",
+  "displayName": "SQLite DB Viewer",
+  "description": "Native-feeling SQLite database viewer for VS Code",
+  "version": "0.0.5",
+  "publisher": "keyshout",
+  "license": "MIT",
+  "icon": "assets/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/keyshout/SQLite-DB-Viewer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/keyshout/SQLite-DB-Viewer/issues"
+  },
+  "homepage": "https://github.com/keyshout/SQLite-DB-Viewer/#readme",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Data Science"
+  ],
+  "keywords": [
+    "sqlite",
+    "database",
+    "db",
+    "viewer"
+  ],
+  "files": [
+    "dist/**",
+    "webview-ui/dist/**",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "assets/icon.png"
+  ],
+  "main": "dist/extension.js",
+  "activationEvents": [
+    "onCustomEditor:sqliteDbViewer.dbViewer"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "sqliteDbViewer.openFile",
+        "title": "SQLite DB Viewer: Open"
+      }
+    ],
+    "customEditors": [
+      {
+        "viewType": "sqliteDbViewer.dbViewer",
+        "displayName": "SQLite DB Viewer",
+        "selector": [
+          {
+            "filenamePattern": "*.db"
+          },
+          {
+            "filenamePattern": "*.sqlite"
+          },
+          {
+            "filenamePattern": "*.sqlite3"
+          }
+        ],
+        "priority": "default"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "sqliteDbViewer.openFile",
+          "when": "resourceExtname == .db || resourceExtname == .sqlite || resourceExtname == .sqlite3",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "build:webview": "npm --prefix webview-ui run build",
+    "copy:codicons": "xcopy \"node_modules\\@vscode\\codicons\\dist\" \"dist\\codicons\" /E /I /Y",
+    "build": "npm run compile && npm run minify:extension && npm run build:webview && npm run copy:codicons",
+    "minify:extension": "esbuild dist/extension.js --bundle --minify --platform=node --target=node16 --outfile=dist/extension.js --external:vscode --allow-overwrite",
+    "dev:webview": "npm --prefix webview-ui run dev"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.21.5",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@vscode/codicons": "^0.0.36",
+    "jimp": "^1.6.0"
+  }
+}

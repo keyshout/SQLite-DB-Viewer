@@ -1,6 +1,22 @@
 ﻿# Changelog
 
 All notable changes to the "SQLite DB Viewer" extension will be documented in this file.
+## [0.0.9] - 2026-02-11
+
+### Stability & Performance
+-   **Enhanced Stability**: Resolved intermittent "Timeout" errors and data synchronization issues for a reliable experience.
+-   **Smoother Scrolling**: Significantly improved scroll responsiveness and eliminated lag, especially when using the mouse wheel.
+
+### Scroll & Navigation
+-   **Seamless Scrolling**: You can now scroll through your entire dataset effortlessly. No more clicking "Next Page" repeatedly.
+-   **Smart Pagination**: The "Page" indicator now automatically updates as you scroll, and vice-versa.
+-   **Snap Fixes**: Fixed issues where the view would jump or snap unexpectedly during manual scrolling.
+-   **Better Visibility**: Increased the data view to show 100 rows at a time by default.
+
+### UI Improvements
+-   **Select All**: Added `Ctrl+A` (or `Cmd+A`) support to quickly select all visible rows.
+-   **Cleaner Selection**: Selecting multiple rows now highlights only the rows, keeping the text clear and readable (no accidental text selection).
+
 ## [0.0.8] - 2026-02-10
 
 ### Added

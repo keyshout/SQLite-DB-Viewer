@@ -2,7 +2,7 @@
   "name": "sqlite-db-viewer",
   "displayName": "SQLite DB Viewer",
   "description": "Native-feeling SQLite database viewer for VS Code",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "publisher": "keyshout",
   "license": "MIT",
   "icon": "assets/icon.png",
@@ -91,7 +91,8 @@
     "watch": "tsc -watch -p ./",
     "build:webview": "npm --prefix webview-ui run build",
     "copy:codicons": "xcopy \"node_modules\\@vscode\\codicons\\dist\" \"dist\\codicons\" /E /I /Y",
-    "build": "npm run compile && npm run minify:extension && npm run build:webview && npm run copy:codicons",
+    "build:full": "npm run compile && npm run minify:extension && npm run build:webview && npm run copy:codicons",
+    "build": "npm run compile && npm run minify:extension && npm run copy:codicons",
     "minify:extension": "esbuild dist/extension.js --bundle --minify --platform=node --target=node16 --outfile=dist/extension.js --external:vscode --allow-overwrite",
     "dev:webview": "npm --prefix webview-ui run dev"
   },

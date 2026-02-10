@@ -2,7 +2,7 @@
   "name": "sqlite-db-viewer",
   "displayName": "SQLite DB Viewer",
   "description": "Native-feeling SQLite database viewer for VS Code",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "publisher": "keyshout",
   "license": "MIT",
   "icon": "assets/icon.png",
@@ -18,13 +18,25 @@
     "vscode": "^1.85.0"
   },
   "categories": [
-    "Data Science"
+    "Data Science",
+    "Visualization",
+    "Programming Languages",
+    "Other"
   ],
   "keywords": [
     "sqlite",
     "database",
     "db",
-    "viewer"
+    "viewer",
+    "sql",
+    "sqlite3",
+    "explorer",
+    "manager",
+    "admin",
+    "browser",
+    "editor",
+    "query",
+    "grid"
   ],
   "files": [
     "dist/**",

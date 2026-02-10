@@ -1,6 +1,13 @@
 ﻿# Changelog
 
 All notable changes to the "SQLite DB Viewer" extension will be documented in this file.
+## [0.0.8] - 2026-02-10
+
+### Added
+- **Edit Row Navigation**: Added Up/Down arrow buttons to the "Edit Row" modal, allowing users to navigate between rows without closing the modal.
+- **Auto-expanding Textareas**: Text fields in the "Edit Row" modal now automatically resize to fit their content, improving readability for long text.
+- **Metadata Updates**: Expanded extension categories and keywords for better discoverability.
+
 
 ## [0.0.7] - 2026-02-10
 ### Major Features

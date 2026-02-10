@@ -2,6 +2,11 @@
 
 All notable changes to the "SQLite DB Viewer" extension will be documented in this file.
 
+## [0.0.7] - 2026-02-10
+### Major Features
+-   **Sticky Columns**: Pinned columns and the "Action" column now remain fixed while scrolling horizontally, improving navigation in wide tables.
+-   **Improved Row Pinning**: Pinned rows now correctly overlay sticky columns, ensuring a consistent and glitch-free scrolling experience.
+
 ## [0.0.6] - 2026-02-07
 ### Major Features
 -   **Enhanced "Create Table" Modal**: Redesigned with a professional grid layout. Now supports adding multiple columns at once with name, type, and Primary Key selection.

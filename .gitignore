@@ -6,12 +6,8 @@ node_modules
 # Testing
 coverage
 
-# Production
-# dist
-out
-build
-
-# Source Code (Obfuscation)
+# Source Code (IGNORED - PUBLIC REPO)
+# These folders are hidden in the PUBLIC branch.
 src/
 webview-ui/src/
 webview-ui/vite.config.ts
@@ -20,6 +16,10 @@ tsconfig.json
 estlintrc.json
 minify.js
 resize_icon.js
+
+# Production (INCLUDED - PUBLIC REPO)
+!dist/
+!webview-ui/dist/
 
 
 # Misc

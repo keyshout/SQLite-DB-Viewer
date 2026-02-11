@@ -1,6 +1,14 @@
 ﻿# Changelog
 
 All notable changes to the "SQLite DB Viewer" extension will be documented in this file.
+## [0.1.0] - 2026-02-12
+
+### UI/UX Refinements
+-   **Reset Filters Button**: Added a dedicated "Reset Filters" button to the toolbar. It dynamically enables only when filters are active and clears all row, column, and mode filters with a single click.
+-   **Smart Ctrl+A**: Improved `Ctrl+A` behavior. It now respects context—selecting text only within inputs or side panels, and preventing accidental global table row selection when working in these areas.
+-   **Side Panel Focus**: Improved focus management for Sidebar and Details panels to prevent keyboard shortcuts from bleeding into the main table view.
+-   **Layout Polish**: Refined toolbar spacing and button positioning for a more cohesive look.
+
 ## [0.0.9] - 2026-02-11
 
 ### Stability & Performance

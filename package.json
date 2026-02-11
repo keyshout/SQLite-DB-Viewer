@@ -38,15 +38,6 @@
     "query",
     "grid"
   ],
-  "files": [
-    "dist/**",
-    "webview-ui/dist/**",
-    "package.json",
-    "README.md",
-    "CHANGELOG.md",
-    "LICENSE",
-    "assets/icon.png"
-  ],
   "main": "dist/extension.js",
   "contributes": {
     "commands": [
@@ -91,11 +82,13 @@
     "build:full": "npm run compile && npm run minify:extension && npm run build:webview && npm run copy:codicons",
     "build": "npm run compile && npm run minify:extension && npm run copy:codicons",
     "minify:extension": "esbuild dist/extension.js --bundle --minify --platform=node --target=node16 --outfile=dist/extension.js --external:vscode --allow-overwrite",
-    "dev:webview": "npm --prefix webview-ui run dev"
+    "dev:webview": "npm --prefix webview-ui run dev",
+    "package": "vsce package"
   },
   "devDependencies": {
     "@types/node": "^20.11.5",
     "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.7.1",
     "esbuild": "^0.21.5",
     "typescript": "^5.3.3"
   },

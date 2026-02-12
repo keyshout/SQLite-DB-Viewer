@@ -1,6 +1,12 @@
 ﻿# Changelog
 
 All notable changes to the "SQLite DB Viewer" extension will be documented in this file.
+
+## [0.1.1] - 2026-02-12
+
+### UI/UX Refinements
+-   **Improved Modal Backdrop Behavior**: Changed outside click behavior from `onClick` to `onMouseDown`. This prevents accidental closing of modals (like "Edit Row" or "Create Table") when selecting text inside the modal and releasing the mouse button outside.
+
 ## [0.1.0] - 2026-02-12
 
 ### UI/UX Refinements

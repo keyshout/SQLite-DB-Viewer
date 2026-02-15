@@ -2,6 +2,13 @@
 
 All notable changes to the "SQLite DB Viewer" extension will be documented in this file.
 
+## [0.1.2] - 2026-02-15
+
+### UI/UX Refinements
+-   **Action Column Separator**: Added a vertical separator line to the "Action" column (both in header and rows) to clearly distinguish it from the data columns.
+-   **Toolbar Layout**: Optimized the toolbar layout by resizing the filter input and aligning it to the right for a cleaner look.
+-   **Support Button**: Added a dedicated "Buy me a coffee" button (❤️) to the toolbar for quick access.
+
 ## [0.1.1] - 2026-02-12
 
 ### UI/UX Refinements

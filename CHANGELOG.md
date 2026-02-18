@@ -2,6 +2,12 @@
 
 All notable changes to the "SQLite DB Viewer" extension will be documented in this file.
 
+## [0.1.3] - 2026-02-18
+
+### Features
+-   **Column Sorting**: Added support for sorting columns by clicking on the headers. Cycles through Ascending, Descending, and Unsorted states.
+-   **Enhanced Search Visibility**: Pinned rows now remain visible during search/filtering, even if they don't match the search keywords. This ensures important data is never hidden accidentally.
+
 ## [0.1.2] - 2026-02-15
 
 ### UI/UX Refinements

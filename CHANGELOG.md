@@ -2,6 +2,16 @@
 
 All notable changes to the "SQLite DB Viewer" extension will be documented in this file.
 
+## [0.1.4] - 2026-02-20
+
+### Performance
+-   **Virtual Scrolling**: Implemented full virtual scrolling for the data grid. Only visible rows (~50) are rendered in the DOM at any time, instead of all rows. This eliminates crashes and freezes when viewing large tables (50,000+ rows).
+-   **Instant Table Loading**: Large tables (e.g., 64,000 rows / 56 MB databases) now load instantly without browser hangs or memory exhaustion.
+
+### Bug Fixes
+-   **Pagination Fix**: Fixed a feedback loop where smooth scrolling during page transitions would cause the page indicator to flicker and reset.
+-   **Scrollbar Accuracy**: Fixed an issue where the scrollbar thumb size did not accurately represent the total number of rows. The scroll area now correctly reflects the full dataset height.
+
 ## [0.1.3] - 2026-02-18
 
 ### Features

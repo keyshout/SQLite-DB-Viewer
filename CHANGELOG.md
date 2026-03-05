@@ -2,6 +2,14 @@
 
 All notable changes to the "SQLite DB Viewer" extension will be documented in this file.
 
+## [0.1.5] - 2026-03-05
+
+### Features
+-   **Reload Data**: Added a "Reload" button to the toolbar. This allows you to instantly refresh the database view if the underlying `.db` file was modified by an external program (e.g., DB Browser for SQLite) without needing to close and reopen the tab.
+
+### Bug Fixes
+-   **Action Menu Visibility**: Fixed an issue where the row actions menu and the "Add Row" button at the very bottom of the table could be cut off by the scroll boundary. Extracted the styling to use dynamic CSS padding.
+
 ## [0.1.4] - 2026-02-20
 
 ### Performance

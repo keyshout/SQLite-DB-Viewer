@@ -1,6 +1,19 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to the "SQLite DB Viewer" extension will be documented in this file.
+
+## [0.1.6] - 2026-04-10
+
+### Major Features
+-   **Robust Atomic Data Imports**: All batch data imports (CSV, JSON, SQL) are now fully atomic and wrapped in seamless database transactions. A failed row reverts the entire process safely.
+-   **Smart Conflict Resolution**: Added an interactive "Conflict Resolution" modal when importing data with existing Primary Keys. Resolving conflicts gives you options like "Add to Bottom" (bypassing ID constraints) or "Shift & Add to Top" (shifting existing IDs down dynamically to make room).
+-   **Advanced SQL File Parsing**: Implemented a comprehensive raw SQL parser. Standard `INSERT INTO` scripts are intercepted, split line-by-line, and piped into the internal Undo/Redo Engine safely, giving you conflict control over raw scripts.
+-   **Multi-Row Keyboard Deletion**: Native support for deleting multiple selected rows simultaneously by simply pressing the `Delete` (or `Backspace`) key.
+
+### Quality of Life & Refinements
+-   **Bulk Undo/Redo Engine integration**: Bulk actions like importing 50,000 rows or multi-selecting and deleting 1,000 rows at once are tied directly to a single `Ctrl+Z` undo/redo step for rapid recovery.
+-   **Case-Insensitive Column Matching**: CSV and JSON imports now tolerate mismatched header casing, robustly matching `Id` or `ID` to the underlying `id` database column.
+-   **Cleaner Error Messages**: Refactored the error-reporting UI across the entire module. Technical tracebacks are securely logged into the VS Code Output panel, while standard, uncluttered popup alerts are presented to the user.
 
 ## [0.1.5] - 2026-03-05
 

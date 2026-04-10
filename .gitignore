@@ -51,3 +51,6 @@ vsce.log
 
 # Secrets
 KEYS.txt
+
+# Personal Documents
+WORKFLOW.md
